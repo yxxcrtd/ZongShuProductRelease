@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration>
+	<timestamp key="byDay" datePattern="yyyy-MM-dd" />
+	
+	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} %p [%t] %c:%L - %m%n</pattern>
+		</layout>
+	</appender>
+	
+	<appender name="FileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.base}/logs/ProductRelease.${byDay}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<FileNamePattern>${catalina.base}/logs/ProductRelease.${byDay}.%i.zip</FileNamePattern>
+			<MinIndex>1</MinIndex>
+			<MaxIndex>5</MaxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>10MB</MaxFileSize>
+		</triggeringPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss} %p [%t] %c:%L - %msg%n</Pattern>
+		</layout>
+	</appender>
+	
+	<logger name="cn.digitalpublishing.controller" level="INFO" />
+	<logger name="cn.cn.digitalpublishing.dao.impl" level="DEBUG" />
+	<!-- 
+	<logger name="org.springframework.jdbc" level="DEBUG" />
+	<logger name="org.springframework.jdbc.datasource" level="DEBUG" />
+	<logger name="org.springframework.core" level="ERROR" />
+	<logger name="org.springframework.web" level="ERROR" />
+	<logger name="org.springframework.beans" level="ERROR" />
+	<logger name="org.springframework.context" level="ERROR" />
+	<logger name="org.springframework.aop" level="ERROR" />
+	<logger name="org.springframework.jndi" level="ERROR" />
+	<logger name="org.springframework.ui" level="ERROR" />
+	<logger name="org.springframework.transaction" level="ERROR" />
+	-->
+	
+	<root level="DEBUG">
+		<appender-ref ref="Console" />
+		<appender-ref ref="FileLog" />
+	</root>
+</configuration>

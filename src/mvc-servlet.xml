@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:component-scan base-package="cn.digitalpublishing.controller" />
+	<context:component-scan base-package="cn.digitalpublishing.service.impl" />
+	<context:component-scan base-package="cn.digitalpublishing.dao.impl" />
+	
+	<mvc:annotation-driven validator="validator" />
+	<mvc:default-servlet-handler />
+	
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" 
+		p:basenames="classpath:i18n" 
+		p:useCodeAsDefaultMessage="false" 
+		p:defaultEncoding="UTF-8" 
+		p:cacheSeconds="60"
+	/>
+	
+	<bean id="freemarkerConfiguration" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location" value="classpath:freemarker.properties" />
+	</bean>
+
+	<bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer" 
+		p:templateLoaderPath="/WEB-INF/ftl/" 
+		p:defaultEncoding="UTF-8">
+		<property name="freemarkerSettings" ref="freemarkerConfiguration" />
+		<property name="freemarkerVariables">
+			<map>
+				<entry key="xml_escape" value-ref="fmXmlEscape" />
+			</map>
+		</property>
+	</bean>
+	<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver" 
+		p:cache="true"
+		p:order="1" 
+		p:prefix="" 
+		p:suffix=".ftl" 
+		p:contentType="text/html; charset=UTF-8" 
+		p:requestContextAttribute="request" />
+	
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="UTF-8" 
+		p:maxUploadSize="10485760" 
+		p:maxInMemorySize="40960" 
+		p:uploadTempDir="/upload" />
+	
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.springframework.web.multipart.MaxUploadSizeExceededException">Upload_Error</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>
